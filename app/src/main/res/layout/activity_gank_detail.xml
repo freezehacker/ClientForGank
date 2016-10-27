@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/gank_detail_toolbar"
+            android:background="@color/primaryColor"
+            android:layout_width="match_parent"
+            android:layout_height="46dp">
+
+            <TextView
+                android:text="Gank Detail"
+                android:textSize="20sp"
+                android:typeface="serif"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </android.support.v7.widget.Toolbar>
+
+        <WebView
+            android:id="@+id/gank_detail_web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></WebView>
+    </LinearLayout>
+
+    <com.sysu.sjk.custom_view.RoundProgressView
+        android:id="@+id/gank_detail_progress"
+        android:layout_gravity="center"
+        app:textSize="14sp"
+        app:initialNumber="0"
+        app:curNumber="0"
+        app:radius="20dp"
+        app:strokeWidth="3dp"
+        app:showNumber="true"
+        app:textColor="@color/accentColor"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+</FrameLayout>

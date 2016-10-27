@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/gank_list_toolbar"
+        android:background="@color/primaryColor"
+        android:layout_width="match_parent"
+        android:layout_height="46dp">
+
+        <TextView
+            android:text="Ganks"
+            android:textSize="20sp"
+            android:typeface="serif"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/gank_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--if there's content-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/gank_recycler_view"
+            android:scrollbars="vertical"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+        <!--if no content-->
+        <LinearLayout
+            android:id="@+id/gank_empty_list"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="No data...(T_T"
+                android:textSize="20sp"
+                android:textColor="@color/primaryText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

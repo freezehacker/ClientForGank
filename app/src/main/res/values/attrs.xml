@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundProgressView">
+        <attr name="radius" format="dimension" />
+        <attr name="initialNumber" format="integer" />
+        <attr name="curNumber" format="integer" />
+        <attr name="textColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="showNumber" format="boolean" />
+    </declare-styleable>
+</resources>
