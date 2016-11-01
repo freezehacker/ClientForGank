@@ -3,5 +3,9 @@
     <string name="action_settings">Settings</string>
 
     <string name="long_text_example">Hello, this is a text string which wants to test
+        the availability of the product our company recently invented.
+    Hello, this is a text string which wants to test
+        the availability of the product our company recently invented.
+    Hello, this is a text string which wants to test
         the availability of the product our company recently invented.</string>
 </resources>

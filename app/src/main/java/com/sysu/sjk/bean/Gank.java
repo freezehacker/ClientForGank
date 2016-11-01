@@ -1,11 +1,14 @@
 package com.sysu.sjk.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by sjk on 16-10-21.
  */
-public class Gank implements Serializable {
+public class Gank implements Serializable, Parcelable {
 
     private String _id;
     private String createdAt;
@@ -22,7 +25,7 @@ public class Gank implements Serializable {
         _id = id;
     }
 
-    public Gank(String _id, String createdAt,String desc,String publishedAt, String source, String type, String url, boolean used, String who) {
+    public Gank(String _id, String createdAt, String desc, String publishedAt, String source, String type, String url, boolean used, String who) {
         this._id = _id;
         this.createdAt = createdAt;
         this.desc = desc;
@@ -118,5 +121,59 @@ public class Gank implements Serializable {
     public String toString() {
         String strTemplate = "Gank(id=%s): { title:%s, author:%s, contentLength:%d }";
         return String.format(strTemplate, _id, desc, who, (content == null ? 0 : content.length()));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+        out.writeString(this._id);
+        out.writeString(this.url);
+        out.writeString(this.desc);
+        out.writeString(this.content);
+        out.writeString(this.createdAt);
+        out.writeString(this.publishedAt);
+        out.writeString(this.who);
+        out.writeString(this.source);
+        out.writeString(this.type);
+        out.writeByte(this.used ? (byte) 'T' : (byte) 'F');
+    }
+
+    public static final Creator<Gank> CREATOR = new Creator<Gank>() {
+
+        // Must read in the order that it's been written.
+        @Override
+        public Gank createFromParcel(Parcel in) {
+            String id = in.readString();
+            Gank gank = new Gank(id);
+            gank.url = in.readString();
+            gank.desc = in.readString();
+            gank.content = in.readString();
+            gank.createdAt = in.readString();
+            gank.publishedAt = in.readString();
+            gank.who = in.readString();
+            gank.source = in.readString();
+            gank.type = in.readString();
+            gank.used = ((char) in.readByte() == 'T');
+            return gank;
+        }
+
+        @Override
+        public Gank[] newArray(int size) {
+            return new Gank[size];
+        }
+    };
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else {
+            Gank other = (Gank) obj;
+            return this._id.equals(other.get_id());
+        }
     }
 }

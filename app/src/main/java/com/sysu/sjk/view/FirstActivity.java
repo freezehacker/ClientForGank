@@ -1,11 +1,16 @@
 package com.sysu.sjk.view;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.BundleCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,8 +25,10 @@ import android.widget.Toast;
 import com.sysu.sjk.base.BaseActivity;
 import com.sysu.sjk.bean.ApiResponse;
 import com.sysu.sjk.bean.Gank;
+import com.sysu.sjk.cache.CacheAllGankList;
 import com.sysu.sjk.constant.Constants;
 import com.sysu.sjk.network.ApiClient;
+import com.sysu.sjk.service.CacheAllGankListService;
 import com.sysu.sjk.utils.ConnectUtils;
 import com.sysu.sjk.utils.FileUtils;
 import com.sysu.sjk.utils.Logger;
@@ -47,14 +54,13 @@ import rx.schedulers.Schedulers;
  */
 public class FirstActivity extends BaseActivity implements MyClickListener {
 
-    LinearLayout emptyLayout;
+    //LinearLayout emptyLayout;
     SwipeRefreshLayout gankSwipeRefreshLayout;
     RecyclerView gankRecyclerView;
     LinearLayoutManager gankLinearLayoutManager;
     RecyclerView.ItemDecoration gankItemDecoration = null;
     RecyclerView.ItemAnimator gankItemAnimator = null;
     GankListAdapter gankAdapter;
-    List<Gank> gankList= new ArrayList<>();
 
     Subscription gankListSubscription;
 
@@ -63,6 +69,9 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
     private final int PAGE_SIZE = 10;
     private boolean isLoadMore = false; // to record whether it's 'refresh' or 'load more'
 
+    private boolean isFirstLoad = true;
+    CacheAllGankListReceiver cacheAllGankListReceiver;  // receiver, to receive msg when finishing the cache work.
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_first;
@@ -70,7 +79,7 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
 
     @Override
     public void initView() {
-        emptyLayout = (LinearLayout)findViewById(R.id.gank_empty_list);
+        //emptyLayout = (LinearLayout)findViewById(R.id.gank_empty_list);
         gankRecyclerView = (RecyclerView)findViewById(R.id.gank_recycler_view);
         gankSwipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.gank_swipe_refresh_layout);
         configRecyclerViewAndSwipeRefreshLayout();
@@ -78,11 +87,15 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
 
     @Override
     public void initData() {
-        new GetHasReadTask(this)
+        // firstly set the adapter, then add data in the following.
+        gankAdapter = new GankListAdapter(FirstActivity.this);
+        gankRecyclerView.setAdapter(gankAdapter);
+
+        new GetCacheGanksTask(this)
                 .executeOnExecutor(ThreadUtils.getWorkerThreads());
 
-        gankAdapter = new GankListAdapter(FirstActivity.this, gankList);
-        gankRecyclerView.setAdapter(gankAdapter);
+        new GetHasReadTask(this)
+                .executeOnExecutor(ThreadUtils.getWorkerThreads());
 
         // auto request when entering the activity
         pageIndex = 1;
@@ -127,6 +140,13 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
                 return true;
             }
         });
+
+        // register the broadcast
+        cacheAllGankListReceiver = new CacheAllGankListReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CacheAllGankListReceiver.CACHE_GANK_LIST_FINISHED);
+        intentFilter.addAction(CacheAllGankListReceiver.NO_NEED_TO_CACHE_GANK_LIST);
+        registerReceiver(cacheAllGankListReceiver, intentFilter);
     }
 
     private void configRecyclerViewAndSwipeRefreshLayout() {
@@ -145,7 +165,7 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == gankList.size()) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == gankAdapter.getListSize()) {
                     loadMore();
                 }
             }
@@ -204,7 +224,6 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
                             tip = "No more data or connectivity error...";
                         } else {
                             tip = "Request error...";
-                            showEmptyList();
                         }
                         Snackbar snackbar = Snackbar.make(gankRecyclerView, tip, Snackbar.LENGTH_SHORT);
                         snackbar.setActionTextColor(Color.RED);
@@ -222,29 +241,25 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
                             Toast.makeText(FirstActivity.this, "More ganks got!", Toast.LENGTH_SHORT).show();
                         } else {
                             if (ganks.size() > 0) {
-                                showNormalList();
                                 gankAdapter.refreshItems(ganks);
-                                Toast.makeText(FirstActivity.this, "New ganks got!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(FirstActivity.this, "New ganks got!!!", Toast.LENGTH_SHORT).show();
+
+                                if (isFirstLoad) {
+                                    isFirstLoad = false;
+
+                                    // start service to cache the newest gank list
+                                    Intent serviceIntent = new Intent(FirstActivity.this, CacheAllGankListService.class);
+                                    serviceIntent.putParcelableArrayListExtra(CacheAllGankListService.INTENT_KEY, new ArrayList<Parcelable>(ganks));
+                                    startService(serviceIntent);
+                                }
                             } else {
-                                showEmptyList();
                                 Toast.makeText(FirstActivity.this, "No ganks on server(T_T", Toast.LENGTH_SHORT).show();
                             }
-
                         }
 
                         hideRefreshIcon();
                     }
                 });
-    }
-
-    private void showNormalList() {
-        emptyLayout.setVisibility(View.GONE);
-        gankRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    private void showEmptyList() {
-        emptyLayout.setVisibility(View.VISIBLE);
-        gankRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
@@ -255,6 +270,8 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
 
         new SetHasReadTask(this)
                 .executeOnExecutor(ThreadUtils.getWorkerThreads(), gankAdapter.getHasReadSet()); // consider to put this in 'onPause'
+
+        unregisterReceiver(cacheAllGankListReceiver);   // unregister, or it causes MEMORY LEAK.
 
         super.onDestroy();
     }
@@ -285,8 +302,8 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
 
         Intent intent = new Intent(FirstActivity.this, DetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(DetailActivity.URL_KEY, gankList.get(position).getUrl());
-        bundle.putString(DetailActivity.TITLE_KEY, gankList.get(position).getDesc());
+        bundle.putString(DetailActivity.URL_KEY, gankAdapter.getItem(position).getUrl());
+        bundle.putString(DetailActivity.TITLE_KEY, gankAdapter.getItem(position).getDesc());
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -319,6 +336,29 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
     // scroll to the top of the list
     private void goBackTopOfList() {
         gankRecyclerView.smoothScrollToPosition(0);
+    }
+
+
+    /* Load cached gank list from file, before requesting data from server. */
+    public static class GetCacheGanksTask extends AsyncTask<Void, Void, List<Gank>> {
+        SoftReference<BaseActivity> activitySoftReference = null;
+
+        public GetCacheGanksTask(BaseActivity activity) {
+            activitySoftReference = new SoftReference<>(activity);
+        }
+
+        @Override
+        protected List<Gank> doInBackground(Void... voids) {
+            return CacheAllGankList.retrieve();
+        }
+
+        @Override
+        protected void onPostExecute(List<Gank> oldGankList) {
+            if (activitySoftReference != null && oldGankList != null) {
+                ((FirstActivity)activitySoftReference.get()).gankAdapter.addItems(oldGankList);
+            }
+            activitySoftReference = null;
+        }
     }
 
     /* Load the set that keeps the ids of ganks that has been read. */
@@ -363,6 +403,25 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
         @Override
         protected void onPostExecute(Void aVoid) {
             activitySoftReference = null;
+        }
+    }
+
+
+    /* Receive message when caching gank list finished. */
+    public class CacheAllGankListReceiver extends BroadcastReceiver {
+
+        public static final String CACHE_GANK_LIST_FINISHED = "cache_finish";
+        public static final String NO_NEED_TO_CACHE_GANK_LIST = "no_need_to_cache";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (CACHE_GANK_LIST_FINISHED.equals(action)) {
+                Logger.log("Cache gank list OK!");
+                // ...extra ops
+            } else if (NO_NEED_TO_CACHE_GANK_LIST.equals(action)) {
+                Logger.log("Already has newest cache, so no need to cache the gank list.");
+            }
         }
     }
 }

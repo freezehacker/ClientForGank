@@ -14,7 +14,7 @@ import java.io.ObjectOutputStream;
  */
 public class FileUtils {
 
-    public static String directory;
+    public static String directory; // root directory of all file operations
 
     // object-->file
     public static void saveObject(String fileName, Object object) {
@@ -46,5 +46,15 @@ public class FileUtils {
         Logger.log("Retrieve object from file.");
 
         return ret;
+    }
+
+    // delete a file
+    public static boolean deleteFile(String fileName) {
+        File file = new File(directory, fileName);
+        if (file.exists()) {
+            return file.delete();
+        } else {
+            return true;
+        }
     }
 }

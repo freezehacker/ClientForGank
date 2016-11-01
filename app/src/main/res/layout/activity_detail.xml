@@ -8,42 +8,74 @@
     tools:context=".GankDetailActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/detail_ctl"
-            android:fitsSystemWindows="true"
-            app:contentScrim="@color/primaryColor"
-            app:statusBarScrim="@color/primaryColor"
-            app:expandedTitleMarginStart="48dp"
-            app:expandedTitleMarginEnd="64dp"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/detail_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/detail_toolbar"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_collapseMode="pin"></android.support.v7.widget.Toolbar>
+                android:orientation="horizontal">
 
-            <!--extras...-->
+                <com.sysu.sjk.custom_view.RoundProgressView
+                    android:id="@+id/detail_progress"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:visibility="visible"
+                    app:initialNumber="0"
+                    app:radius="15dp"
+                    app:showNumber="true"
+                    app:strokeWidth="1dp"
+                    app:textColor="@color/textOrIconColor"
+                    app:textSize="13sp"
+                    android:layout_marginRight="15dp"
+                    />
 
-        </android.support.design.widget.CollapsingToolbarLayout>
+                <TextView
+                    android:id="@+id/running_title"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:layout_gravity="center_vertical"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/textOrIconColor"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <WebView
-            android:id="@+id/detail_webview"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></WebView>
+            android:layout_height="match_parent">
+
+            <WebView
+                android:id="@+id/detail_webview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

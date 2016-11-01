@@ -33,7 +33,7 @@
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
 
-        <!--if no content-->
+        <!--if no content
         <LinearLayout
             android:id="@+id/gank_empty_list"
             android:gravity="center"
@@ -41,12 +41,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
-                android:text="No data...(T_T"
+                android:text="No data~(T_T"
                 android:textSize="20sp"
                 android:textColor="@color/primaryText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-        </LinearLayout>
+        </LinearLayout>-->
 
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

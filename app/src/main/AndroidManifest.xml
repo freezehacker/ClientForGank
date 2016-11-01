@@ -46,6 +46,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
+
+        <service android:name="com.sysu.sjk.service.CacheAllGankListService">
+            <intent-filter>
+                <action android:name="com.sysu.sjk.cache_all_gank_list" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

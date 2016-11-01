@@ -13,6 +13,7 @@ import com.sysu.sjk.utils.Logger;
 import com.sysu.sjk.view.R;
 import com.sysu.sjk.view.tmp_interface.MyClickListener;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,14 +24,13 @@ import java.util.Set;
 public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankListViewHolder> {
 
     private Context mContext;
-    private List<Gank> mGankList;
+    private List<Gank> mGankList = new ArrayList<>();
     private MyClickListener mMyClickListener;
 
     private Set<String> hasReadSet; // keep the ids that has been read
 
-    public GankListAdapter(Context context, List<Gank> gankList) {
+    public GankListAdapter(Context context) {
         mContext = context;
-        mGankList = gankList;
         //hasReadSet = new HashSet<>();
     }
 
@@ -50,6 +50,16 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankLi
     // a public interface for user to set a listener
     public void setMyClickListener(MyClickListener myClickListener) {
         mMyClickListener = myClickListener;
+    }
+
+    // to retrieve a certain item
+    public Gank getItem(int position) {
+        return mGankList.get(position);
+    }
+
+    // to get the size of the list
+    public int getListSize() {
+        return mGankList.size();
     }
 
     // add more items
@@ -81,10 +91,10 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankLi
 
         holder.title.setText(filterTitle(gank.getDesc(), position));
         if (hasReadSet.contains(gank.get_id())) {
-            Logger.log((position + 1) + " has read");
+            //Logger.log((position + 1) + " has read");
             holder.title.setTextColor(mContext.getResources().getColor(R.color.secondText));
         } else {
-            Logger.log((position + 1) + " NOT read");
+            //Logger.log((position + 1) + " NOT read");
             holder.title.setTextColor(mContext.getResources().getColor(R.color.primaryText));
         }
 
