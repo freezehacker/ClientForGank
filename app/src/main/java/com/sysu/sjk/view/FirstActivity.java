@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.BundleCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -61,6 +62,7 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
     RecyclerView.ItemDecoration gankItemDecoration = null;
     RecyclerView.ItemAnimator gankItemAnimator = null;
     GankListAdapter gankAdapter;
+    FloatingActionButton fab;
 
     Subscription gankListSubscription;
 
@@ -83,6 +85,7 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
         gankRecyclerView = (RecyclerView)findViewById(R.id.gank_recycler_view);
         gankSwipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.gank_swipe_refresh_layout);
         configRecyclerViewAndSwipeRefreshLayout();
+        fab = (FloatingActionButton)findViewById(R.id.fab_jump_to_picture_list_activity);
     }
 
     @Override
@@ -138,6 +141,14 @@ public class FirstActivity extends BaseActivity implements MyClickListener {
                 }
 
                 return true;
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FirstActivity.this, PictureListActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -80,7 +80,7 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankLi
 
     @Override
     public GankListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View baseView = LayoutInflater.from(mContext).inflate(R.layout.item_gank, parent, false);
+        View baseView = LayoutInflater.from(mContext).inflate(R.layout.item_gank_cardview_version, parent, false);
         GankListViewHolder ret = new GankListViewHolder(baseView);
         return ret;
     }
@@ -134,7 +134,7 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.GankLi
     }
 
     private String filterPublisher(String publisher) {
-        return "by " + publisher;
+        return "@" + publisher;
     }
 
     @Override

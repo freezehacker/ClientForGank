@@ -18,11 +18,11 @@ public abstract class BaseFragment extends Fragment {
         if (mView == null) {
             mView = inflater.inflate(getLayoutId(), container, false);
             initView();
-            initData();
+            initData(savedInstanceState);
             initListener();
         } else {
             // view has existed, just restore it, instead of re-inflating it
-            onRestoreView();
+            onRestoreView(savedInstanceState);
         }
 
         return mView;
@@ -34,13 +34,13 @@ public abstract class BaseFragment extends Fragment {
      * custom callback of fragment, to restore the view(mView) that hasn't been recycled
      * user should override this callback, to realize his operations
      */
-    public abstract void onRestoreView();
+    public abstract void onRestoreView(Bundle savedInstanceState);
 
     public abstract int getLayoutId();
 
     public abstract void initView();
 
-    public abstract void initData();
+    public abstract void initData(Bundle savedInstanceState);
 
     public abstract void initListener();
 }

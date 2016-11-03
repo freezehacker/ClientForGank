@@ -20,7 +20,7 @@ public class BaseApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.log("1");
+        Logger.log("1111111111111111111111111");
         mContext = this;
 
         FileUtils.directory = getFilesDir().getAbsolutePath();

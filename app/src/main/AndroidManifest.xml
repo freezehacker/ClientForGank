@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+
     <application
         android:name="com.sysu.sjk.base.BaseApp"
         android:allowBackup="true"
@@ -25,27 +26,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GankDetailActivity"></activity>
+        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".TestProgressActivity"></activity>
+        <activity android:name=".TestDaoActivity"></activity>
+        <activity android:name=".PictureListActivity"></activity>
+        <activity android:name=".PictureDetailActivity"></activity>
 
-        <activity android:name=".GankDetailActivity">
-        </activity>
-        <activity android:name=".DetailActivity">
-        </activity>
-
-        <activity android:name=".TestProgressActivity">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
-
-        <activity android:name=".TestDaoActivity">
-<!--            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
 
         <service android:name="com.sysu.sjk.service.CacheAllGankListService">
             <intent-filter>

@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/gank_list_toolbar"
-        android:background="@color/primaryColor"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="46dp">
+        android:layout_height="?attr/actionBarSize"
+        >
 
-        <TextView
-            android:text="Ganks"
-            android:textSize="20sp"
-            android:typeface="serif"
-            android:gravity="center"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/gank_list_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.v7.widget.Toolbar>
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:background="@color/primaryColor">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Ganks"
+                android:textColor="@color/textOrIconColor"
+                android:textSize="20sp" />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/gank_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
 
         <!--if there's content-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/gank_recycler_view"
-            android:scrollbars="vertical"
-            android:visibility="visible"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:visibility="visible"></android.support.v7.widget.RecyclerView>
 
         <!--if no content
         <LinearLayout
@@ -49,4 +58,15 @@
         </LinearLayout>-->
 
     </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_jump_to_picture_list_activity"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/heart"
+        android:layout_gravity="bottom|end"
+        app:elevation="20dp" />
+
+</android.support.design.widget.CoordinatorLayout>

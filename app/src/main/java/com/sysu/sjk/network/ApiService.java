@@ -15,6 +15,6 @@ public interface ApiService {
     @GET("Android/{pageSize}/{pageIndex}")
     Observable<ApiResponse<Gank>> getAndroidGanksByPage(@Path("pageSize") int pageSize, @Path("pageIndex") int pageIndex);
 
-    @GET("福利/{pageSize}/{pageIndex}")
+    @GET("%E7%A6%8F%E5%88%A9/{pageSize}/{pageIndex}")
     Observable<ApiResponse<Gank>> getPicturesByPage(@Path("pageSize") int pageSize, @Path("pageIndex") int pageIndex);
 }
